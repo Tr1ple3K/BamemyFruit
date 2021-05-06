@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title></title>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="style1.css">
+  <link rel="stylesheet" href="set1.css">
+
+  <!--Google Fonts-->
+  <link href="https://fonts.googleapis.com/css?family=Playfair+Display" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
+  <script src="//script.sheetsu.com/"></script>
+</head>
+<body>
+<div id="main-wrapper">
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-6 left-side">
+        <header>
+          <span>Need an account?</span>
+          <h3 style="color: whitesmoke">Create Account<br>Make Profits</h3>
+        </header>
+      </div>
+      <div class="col-md-6 right-side">
+        <form method="post" autocomplete="off" name="google-sheet" id="myForm">
+        <span class="input input--hoshi">
+          <input class="input__field input__field--hoshi" type="text" id="username" name="username" required>
+          <label class="input__label input__label--hoshi input__label--hoshi-color-3" for="name">
+            <span class="input__label-content input__label-content--hoshi">Username</span>
+          </label>
+        </span>
+        <p id="demo" style="color: red;"></p>
+        <span class="input input--hoshi">
+          <input class="input__field input__field--hoshi" type="email" id="email" name = "email" required>
+          <label class="input__label input__label--hoshi input__label--hoshi-color-3" for="email">
+            <span class="input__label-content input__label-content--hoshi">E-mail</span>
+          </label>
+        </span>
+        <p id="demo1" style="color: red;"></p>
+        <span class="input input--hoshi">
+          <input class="input__field input__field--hoshi" type="password" id="password" name="password" required minlength="6">
+          <label class="input__label input__label--hoshi input__label--hoshi-color-3" for="password">
+            <span class="input__label-content input__label-content--hoshi">Password</span>
+          </label>
+        </span>
+        <span class="input input--hoshi">
+          <input class="input__field input__field--hoshi" type="password" id="rpass" required>
+          <label class="input__label input__label--hoshi input__label--hoshi-color-3" for="password1">
+            <span class="input__label-content input__label-content--hoshi">Repeat Password</span>
+          </label>
+        </span>
+        <p id="demo2" style="color: red;"></p>
+        <div class="cta">
+          <input type="submit" value="Sign-Up Now" name="submit" class="btn btn-primary pull-left">
+          </input>
+          <span><a href="login.html">I am already a member</a></span>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div> <!-- end #main-wrapper -->
+
+<!-- Scripts -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="script.js"></script>
+<script src="regis.js"></script>
+<script>
+  (function() {
+    // trim polyfill : https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
+    if (!String.prototype.trim) {
+      (function() {
+        // Make sure we trim BOM and NBSP
+        var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+        String.prototype.trim = function() {
+          return this.replace(rtrim, '');
+        };
+      })();
+    }
+
+    [].slice.call( document.querySelectorAll( 'input.input__field' ) ).forEach( function( inputEl ) {
+      // in case the input is already filled..
+      if( inputEl.value.trim() !== '' ) {
+        classie.add( inputEl.parentNode, 'input--filled' );
+      }
+
+      // events:
+      inputEl.addEventListener( 'focus', onInputFocus );
+      inputEl.addEventListener( 'blur', onInputBlur );
+    } );
+
+    function onInputFocus( ev ) {
+      classie.add( ev.target.parentNode, 'input--filled' );
+    }
+
+    function onInputBlur( ev ) {
+      if( ev.target.value.trim() === '' ) {
+        classie.remove( ev.target.parentNode, 'input--filled' );
+      }
+    }
+  })();
+</script>
+<script>
+    document.querySelector("#myForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      check_send();
+    });
+  function check_send() {
+  Sheetsu.read("https://sheetsu.com/apis/v1.0su/cb7c8cad814a", {}).then((data) => {
+  var username = document.getElementById("username").value
+  var email = document.getElementById("email").value
+  var password = document.getElementById("password").value
+  var rpass = document.getElementById("rpass").value
+      for(i = 0 ; i < Object.keys(data).length ; i++){
+        console.log(i)
+        if(username == data[i].username){
+          document.getElementById("demo").innerHTML = "Username already exists.";
+        }
+        else{
+          document.getElementById("demo").innerHTML = "";
+        }
+        if(email == data[i].email){
+          document.getElementById("demo1").innerHTML = "E-mail already exists.";
+        }
+        else{
+          document.getElementById("demo1").innerHTML = "";
+        }
+        if(password != rpass){
+          document.getElementById("demo2").innerHTML = "Invalid Password.";
+        }
+        else{
+          document.getElementById("demo1").innerHTML = "";
+        }
+        if(username == data[i].username || email == data[i].email || password != rpass){
+          break;
+        }
+        else{
+          const scriptURL = 'https://script.google.com/macros/s/AKfycbxjM-nRnau5TsK5v4ZvPdyGINlWK7UscmRo5U9efDwax5B7QBcB/exec'
+          const form = document.forms['google-sheet']
+          fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+                .then(response => alert("Thanks for Register. We will transport you to Login")).then(response => location.replace("login.html"))
+                .catch(error => console.error('Error!', error.message))
+          break;
+            }
+        }
+      }
+);
+}
+    
+</script>
+</body>
+</html>

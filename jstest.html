@@ -1,0 +1,54 @@
+<head>
+  <script src="//script.sheetsu.com/"></script>
+</head>
+<body>
+  <h2>JavaScript Operators</h2>
+  <form id="myForm" method="post" autocomplete="off" name="google-sheet">
+    <input type="text" id = "username" name="username">
+    <input type="text" id = "email" name = "email">
+    <input type="text" id = "pass" name = "password">
+    <input type="text" id = "rpass">
+    <button type="submit">click me</button>
+  </form>
+  <p id="demo" style="color:red"></p>
+  <p id="demo1"></p>
+  <p id="demo2"></p>
+  <script>
+    document.querySelector("#myForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      check_send();
+    });
+  function check_send() {
+  Sheetsu.read("https://sheetsu.com/apis/v1.0su/cb7c8cad814a", {}).then((data) => {
+  var username = document.getElementById("username").value
+  var email = document.getElementById("email").value
+  var pass = document.getElementById("pass").value
+  var rpass = document.getElementById("rpass").value
+      for(i = 0 ; i < Object.keys(data).length ; i++){
+        if(username == data[i].username){
+          document.getElementById("demo").innerHTML = "Suser";
+        }
+        if(email == data[i].email){
+          document.getElementById("demo1").innerHTML = "Semail";
+        }
+        if(pass != rpass){
+          document.getElementById("demo2").innerHTML = "NSpass";
+        }
+        if(username == data[i].username || email == data[i].email || pass != rpass){
+          break;
+        }
+        else{
+          const scriptURL = 'https://script.google.com/macros/s/AKfycbxjM-nRnau5TsK5v4ZvPdyGINlWK7UscmRo5U9efDwax5B7QBcB/exec'
+          const form = document.forms['google-sheet']
+          fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+                .then(response => alert("Thanks for Contacting us..! We Will Contact You Soon..."))
+                .catch(error => console.error('Error!', error.message))
+          break;
+            }
+        }
+      }
+);
+}
+    
+  </script>
+</body>
